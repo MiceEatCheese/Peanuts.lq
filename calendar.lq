@@ -1,0 +1,23 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:github.com/MiceEatCheese/Peanuts.js
+BEGIN:VEVENT
+SUMMARY:{{ event.summary }}
+DESCRIPTION:{{ event.description }} (bitcoin address in case your calendar application does not support URL parameter for events: {{ event.bitcoin.address }})
+URL:bitcoin:{{ event.bitcoin.address }}
+{% if event.bitcoin | size > 1 %}?{% endif %}
+{% for param in event.bitcoin %}
+	{% if param[0] != "address" %}
+		{{ param[0] | downcase }}={{ param[1] | downcase }}
+		{% if forloop.index < forloop.length %}&{% endif %}
+	{% endif %}
+{% endfor %}
+DTSTART:{{ event.start }}
+{% if event.rrule | size > 0 %}RRULE:
+	{% for rrule in event.rrule %}
+		{{ rrule[0] | upcase }}={{ rrule[1] | upcase }}
+		{% if forloop.index < forloop.length %};{% endif %}
+	{% endfor %}
+{% endif %}
+END:VEVENT
+END:VCALENDAR
